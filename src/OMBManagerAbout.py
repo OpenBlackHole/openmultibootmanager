@@ -31,7 +31,7 @@ from OMBManagerLocale import _
 
 class OMBManagerAbout(Screen):
 	skin = """
-			<screen position="360,150" size="560,400">
+			<screen position="center,center" size="560,400">
 				<widget name="about"
 						position="10,10"
 						size="540,340"
@@ -46,7 +46,8 @@ class OMBManagerAbout(Screen):
 		
 		about = "openMultiboot Manager " + OMB_MANAGER_VERION + "\n"
 		about += "(c) 2014 Impex-Sat Gmbh & Co.KG\n\n"
-		about += "Written by Sandro Cavazzoni <sandro@skanetwork.com>"
+		about += "Written by Sandro Cavazzoni <sandro@skanetwork.com>\n"
+		about += "Modded by Meo"
 		
 		self['about'] = Label(about)
 		self["actions"] = ActionMap(["SetupActions"],
