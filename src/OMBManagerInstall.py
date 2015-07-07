@@ -140,7 +140,7 @@ class OMBManagerInstall(Screen):
 
 		self.esize = "128KiB"
 		self.vid_offset = "2048"
-		self.nandsim_parm = "first_id_byte=0x20 second_id_byte=0xac third_id_byte=0x00 fourth_id_byte=0x15"
+		self.nandsim_parm = "first_id_byte=0x20 second_id_byte=0xaa third_id_byte=0x00 fourth_id_byte=0x15"
 
 		self['info'] = Label(_("Choose the image to install"))
 		self["list"] = List(upload_list)

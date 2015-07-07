@@ -39,9 +39,19 @@ class OMBManagerInit:
 
 		message = _("Where do you want to install openMultiboot?")
 		disks_list = []
-		for partition in harddiskmanager.getMountedPartitions():
-			if partition and partition.mountpoint and partition.device and partition.mountpoint != '/' and partition.device[:2] == 'sd':
-				disks_list.append((partition.description, partition))
+#		for partition in harddiskmanager.getMountedPartitions():
+#			if partition and partition.mountpoint and partition.device and partition.mountpoint != '/' and partition.device[:2] == 'sd':
+#				disks_list.append((partition.description, partition))
+
+# by meo: adapted for classic Bh.
+		f = open("/proc/mounts",'r')
+ 		for line in f.readlines():
+ 			if line.find(' /universe') != -1:
+ 				continue
+			elif line.find(' ext') != -1:
+				parts = line.strip().split()
+				disks_list.append((parts[1], parts[1]))
+		f.close()
 
 		if len(disks_list) > 0:
 			disks_list.append((_("Cancel"), None))
@@ -49,7 +59,7 @@ class OMBManagerInit:
 		else:
 			self.session.open(
 				MessageBox,
-				_("No suitable devices found"),
+				_("Sorry it seems that there are not Linux formatted devices mounted on your Vu+."),
 				type = MessageBox.TYPE_ERROR
 			)
 
@@ -64,8 +74,8 @@ class OMBManagerInit:
 		return  "none"
 		
 	def createDir(self, partition):
-		data_dir = partition.mountpoint + '/' + OMB_DATA_DIR
-		upload_dir = partition.mountpoint + '/' + OMB_UPLOAD_DIR
+		data_dir = partition + '/' + OMB_DATA_DIR
+		upload_dir = partition + '/' + OMB_UPLOAD_DIR
 		try:
 			os.makedirs(data_dir)
 			os.makedirs(upload_dir)
@@ -82,7 +92,7 @@ class OMBManagerInit:
 		if os.path.isfile('/sbin/open_multiboot'):
 			os.system("ln -sfn /sbin/open_multiboot /sbin/init")
 				
-		self.session.open(OMBManagerList, partition.mountpoint)
+		self.session.open(OMBManagerList, partition)
 	
 	def formatDevice(self, confirmed):
 		if confirmed:
@@ -121,17 +131,7 @@ class OMBManagerInit:
 			
 	def initCallback(self, response):
 		if response:
-			fs_type = self.getFSType(response.device)
-			if fs_type not in ['ext3', 'ext4']:
-				self.response = response
-				self.session.openWithCallback(
-					self.formatDevice,
-					MessageBox,
-					_("Filesystem not supported\nDo you want format your drive?"),
-					type = MessageBox.TYPE_YESNO
-				)
-			else:
-				self.createDir(response)
+			self.createDir(response)
 
 class OMBManagerKernelModule:
 	def __init__(self, session, kernel_module):
